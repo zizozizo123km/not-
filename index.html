@@ -11,7 +11,7 @@
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f3f4f6;
-            direction: rtl; /* Set direction to right-to-left for Arabic */
+            direction: rtl;
         }
         .cv-container {
             width: 21cm;
@@ -39,7 +39,6 @@
                 padding: 1rem;
             }
         }
-        /* Loading animation */
         .loader {
             border: 4px solid #f3f3f3;
             border-top: 4px solid #3498db;
@@ -54,145 +53,185 @@
         }
     </style>
 </head>
-<body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen p-4 md:p-8">
+<body class="bg-gray-100 flex flex-col items-center min-h-screen p-4 md:p-8">
 
-    <div class="fixed top-4 left-4 z-50 flex flex-col space-y-2">
-        <button id="save-pdf" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full shadow-lg transition-transform transform hover:scale-105">
-            حفظ كـ PDF
-        </button>
-        <div class="bg-white p-4 rounded-lg shadow-lg">
-            <h3 class="text-lg font-bold mb-2 text-gray-800">اختر القالب</h3>
-            <div class="grid grid-cols-2 gap-2">
-                <button class="template-button bg-gray-200 text-gray-800 py-1 px-2 rounded-lg text-sm" data-template="template1">القالب 1</button>
-                <button class="template-button bg-gray-200 text-gray-800 py-1 px-2 rounded-lg text-sm" data-template="template2">القالب 2</button>
-                <button class="template-button bg-gray-200 text-gray-800 py-1 px-2 rounded-lg text-sm" data-template="template3">القالب 3</button>
-                <button class="template-button bg-gray-200 text-gray-800 py-1 px-2 rounded-lg text-sm" data-template="template4">القالب 4</button>
-                <button class="template-button bg-gray-200 text-gray-800 py-1 px-2 rounded-lg text-sm" data-template="template5">القالب 5</button>
-            </div>
+<div id="control-panel" class="fixed top-4 left-4 z-50 flex flex-col space-y-2 bg-white p-4 rounded-lg shadow-xl transition-transform duration-300">
+    <button id="save-pdf" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full shadow-lg transition-transform transform hover:scale-105">
+        حفظ كـ PDF
+    </button>
+    <button id="add-section" class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full shadow-lg transition-transform transform hover:scale-105">
+        إضافة قسم جديد
+    </button>
+    <div class="bg-gray-50 p-4 rounded-lg shadow-inner">
+        <h3 class="text-lg font-bold mb-2 text-gray-800">اختر القالب</h3>
+        <div class="grid grid-cols-2 gap-2">
+            <button class="template-button bg-gray-200 text-gray-800 py-1 px-2 rounded-lg text-sm" data-template="template1">القالب 1</button>
+            <button class="template-button bg-gray-200 text-gray-800 py-1 px-2 rounded-lg text-sm" data-template="template2">القالب 2</button>
+            <button class="template-button bg-gray-200 text-gray-800 py-1 px-2 rounded-lg text-sm" data-template="template3">القالب 3</button>
+            <button class="template-button bg-gray-200 text-gray-800 py-1 px-2 rounded-lg text-sm" data-template="template4">القالب 4</button>
+            <button class="template-button bg-gray-200 text-gray-800 py-1 px-2 rounded-lg text-sm" data-template="template5">القالب 5</button>
         </div>
     </div>
+</div>
+<button id="toggle-panel" class="fixed top-4 left-4 z-50 md:hidden bg-gray-800 text-white p-2 rounded-full shadow-lg">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+    </svg>
+</button>
 
-    <div class="w-full max-w-2xl bg-white p-6 rounded-lg shadow-xl mb-8">
-        <h2 class="text-2xl font-bold mb-4 text-center text-gray-800">توليد السيرة الذاتية بالذكاء الاصطناعي</h2>
-        <p class="text-gray-600 mb-4 text-center">أدخل معلوماتك (اسمك، خبراتك، مهاراتك، تعليمك، لغاتك، تاريخ ميلادك) في مربع النص أدناه، وسنقوم بتنظيمها لك في قالب احترافي.</p>
-        <textarea id="ai-input" class="w-full h-40 p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800" placeholder="مثال: اسمي الكامل هو علي أحمد، أعمل كمطور برمجيات بخبرة 5 سنوات في بايثون وجافا سكريبت. لدي خبرة في إدارة المشاريع وتطوير الواجهات الأمامية. حاصل على درجة البكالوريوس في علوم الحاسوب من جامعة القاهرة. تاريخ ميلادي 15/05/1990. أتحدث العربية والإنجليزية بطلاقة."></textarea>
-        <div class="mt-4 flex justify-center">
-            <button id="generate-ai-content" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow-md transition-transform transform hover:scale-105 flex items-center space-x-2 space-x-reverse">
-                <span id="generate-text-span">توليد السيرة الذاتية</span>
-                <span id="loading-spinner" class="loader hidden"></span>
+<div class="w-full max-w-2xl bg-white p-6 rounded-lg shadow-xl mb-8">
+    <h2 class="text-2xl font-bold mb-4 text-center text-gray-800">توليد السيرة الذاتية بالذكاء الاصطناعي</h2>
+    <p class="text-gray-600 mb-4 text-center">أدخل معلوماتك (اسمك، خبراتك، مهاراتك، تعليمك، لغاتك، تاريخ ميلادك) في مربع النص أدناه، وسنقوم بتنظيمها لك في قالب احترافي.</p>
+    <textarea id="ai-input" class="w-full h-40 p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800" placeholder="مثال: اسمي الكامل هو علي أحمد، أعمل كمطور برمجيات بخبرة 5 سنوات في بايثون وجافا سكريبت. لدي خبرة في إدارة المشاريع وتطوير الواجهات الأمامية. حاصل على درجة البكالوريوس في علوم الحاسوب من جامعة القاهرة. تاريخ ميلادي 15/05/1990. أتحدث العربية والإنجليزية بطلاقة."></textarea>
+    <div class="mt-4 flex justify-center">
+        <button id="generate-ai-content" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow-md transition-transform transform hover:scale-105 flex items-center space-x-2 space-x-reverse">
+            <span id="generate-text-span">توليد السيرة الذاتية</span>
+            <span id="loading-spinner" class="loader hidden"></span>
+        </button>
+    </div>
+
+    <div id="ai-parsed-output-section" class="mt-8 hidden">
+        <h3 class="text-xl font-bold mb-4 text-gray-800 text-center">البيانات التي تم استخلاصها</h3>
+        <div id="ai-parsed-output" class="bg-gray-50 p-6 rounded-lg border border-gray-200 space-y-4 text-sm text-gray-700">
+        </div>
+        <p class="text-center text-sm text-gray-500 mt-2">
+            ملاحظة: يمكنك مراجعة وتعديل هذه البيانات قبل تطبيقها على السيرة الذاتية.
+        </p>
+        <div class="mt-4 flex justify-center space-x-4 space-x-reverse">
+            <button id="edit-parsed-data" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-6 rounded-lg shadow-md transition-transform transform hover:scale-105">
+                تعديل البيانات
+            </button>
+            <button id="apply-to-cv" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg shadow-md transition-transform transform hover:scale-105">
+                تطبيق على السيرة الذاتية
             </button>
         </div>
+    </div>
+</div>
 
-        <div id="ai-parsed-output-section" class="mt-8 hidden">
-            <h3 class="text-xl font-bold mb-4 text-gray-800 text-center">البيانات التي تم استخلاصها</h3>
-            <div id="ai-parsed-output" class="bg-gray-50 p-6 rounded-lg border border-gray-200 space-y-4 text-sm text-gray-700">
-                </div>
-            <p class="text-center text-sm text-gray-500 mt-2">
-                ملاحظة: يمكنك مراجعة وتعديل هذه البيانات قبل تطبيقها على السيرة الذاتية.
-            </p>
-            <div class="mt-4 flex justify-center">
-                <button id="apply-to-cv" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg shadow-md transition-transform transform hover:scale-105">
-                    تطبيق على السيرة الذاتية
-                </button>
-            </div>
-        </div>
+<div id="cv-document" class="cv-container bg-white rounded-lg overflow-hidden shadow-2xl">
     </div>
 
-    <div id="cv-document" class="cv-container bg-white rounded-lg overflow-hidden shadow-2xl">
+<div id="add-section-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden z-50">
+    <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-md">
+        <h2 class="text-2xl font-bold mb-4 text-gray-800">إضافة قسم جديد</h2>
+        <div class="mb-4">
+            <label for="new-section-title" class="block text-sm font-bold text-gray-700 mb-1">عنوان القسم:</label>
+            <input type="text" id="new-section-title" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
+        <div class="mb-4">
+            <label for="new-section-content" class="block text-sm font-bold text-gray-700 mb-1">محتوى القسم:</label>
+            <textarea id="new-section-content" class="w-full h-32 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+        </div>
+        <div class="flex justify-end space-x-2 space-x-reverse">
+            <button id="cancel-add-section" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-lg">إلغاء</button>
+            <button id="confirm-add-section" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg">إضافة</button>
+        </div>
+    </div>
+</div>
 
-    <script>
-        // Set your API key here. **MUST BE A VALID KEY**
-        // You can get one from Google AI Studio: https://aistudio.google.com/app/apikey
-        const apiKey = "AIzaSyD4TF6AhFZqGB-C0oH0ibAOy6EByKU5ifo";
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+<script>
+    // Set your API key here. **MUST BE A VALID KEY**
+    // You can get one from Google AI Studio: https://aistudio.google.com/app/apikey
+    const apiKey = "AIzaSyD4TF6AhFZqGB-C0oH0ibAOy6EByKU5ifo";
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
 
-        // Define the HTML for each template
-        const templates = {
-            template1: `
-                <div class="flex flex-col md:flex-row h-full">
-                    <div class="w-full md:w-1/3 bg-gray-900 text-white p-8 space-y-8">
-                        <div class="flex flex-col items-center space-y-4">
-                            <img id="profile-image" src="https://placehold.co/150x150/000000/FFFFFF?text=صورتك" alt="صورة شخصية" class="w-36 h-36 rounded-full border-4 border-white object-cover editable">
-                            <div class="text-center">
-                                <h1 id="user-name" class="text-3xl font-bold editable" data-placeholder="اسمك الكامل">اسمك الكامل</h1>
-                                <p id="user-title" class="text-md text-gray-400 editable" data-placeholder="مسمى وظيفي">مسمى وظيفي</p>
+    // Define the HTML for each template
+    const templates = {
+        template1: `
+            <div class="flex flex-col md:flex-row h-full">
+                <div class="w-full md:w-1/3 bg-gray-900 text-white p-8 space-y-8">
+                    <div class="flex flex-col items-center space-y-4">
+                        <img id="profile-image" src="https://placehold.co/150x150/000000/FFFFFF?text=صورتك" alt="صورة شخصية" class="w-36 h-36 rounded-full border-4 border-white object-cover editable">
+                        <div class="text-center">
+                            <h1 id="user-name" class="text-3xl font-bold editable" data-placeholder="اسمك الكامل">اسمك الكامل</h1>
+                            <p id="user-title" class="text-md text-gray-400 editable" data-placeholder="مسمى وظيفي">مسمى وظيفي</p>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <h2 class="text-xl font-semibold border-b-2 border-gray-500 pb-2 mb-4">معلومات الاتصال</h2>
+                        <p id="user-phone" class="text-sm editable" data-placeholder="رقم الهاتف">رقم الهاتف: 123-456-7890</p>
+                        <p id="user-email" class="text-sm editable" data-placeholder="البريد الإلكتروني">البريد الإلكتروني: you@example.com</p>
+                        <p id="user-location" class="text-sm editable" data-placeholder="الموقع">الموقع: مدينتك، دولتك</p>
+                        <p id="user-dob" class="text-sm editable" data-placeholder="تاريخ الميلاد">تاريخ الميلاد: 01-01-1990</p>
+                    </div>
+                    <div class="space-y-4">
+                        <h2 class="text-xl font-semibold border-b-2 border-gray-500 pb-2 mb-4">المهارات</h2>
+                        <ul id="user-skills" class="list-disc list-inside space-y-2 text-sm editable" data-placeholder="مهارة 1، مهارة 2...">
+                            <li>مهارة 1</li>
+                            <li>مهارة 2</li>
+                            <li>مهارة 3</li>
+                        </ul>
+                    </div>
+                    <div class="space-y-4">
+                        <h2 class="text-xl font-semibold border-b-2 border-gray-500 pb-2 mb-4">اللغات</h2>
+                        <ul id="user-languages" class="list-disc list-inside space-y-2 text-sm editable" data-placeholder="لغة 1، لغة 2...">
+                            <li>لغة 1</li>
+                            <li>لغة 2</li>
+                        </ul>
+                    </div>
+                    <div class="space-y-4">
+                        <h2 class="text-xl font-semibold border-b-2 border-gray-500 pb-2 mb-4">الاهتمامات</h2>
+                        <ul id="user-interests" class="list-disc list-inside space-y-2 text-sm editable" data-placeholder="اهتمام 1، اهتمام 2...">
+                            <li>اهتمام 1</li>
+                            <li>اهتمام 2</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="w-full md:w-2/3 p-8 space-y-8">
+                    <div>
+                        <h2 class="text-2xl font-bold border-b-2 border-gray-300 pb-2 mb-4">الملف الشخصي</h2>
+                        <p id="user-profile" class="text-gray-700 leading-relaxed text-sm editable" data-placeholder="اكتب هنا نبذة عنك">
+                            نبذة مختصرة عن خبراتك وأهدافك المهنية.
+                        </p>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold border-b-2 border-gray-300 pb-2 mb-4">الخبرة المهنية</h2>
+                        <div id="user-experience" class="space-y-6">
+                            <div class="relative">
+                                <h3 class="text-lg font-semibold editable" data-placeholder="مسمى وظيفي">مسمى وظيفي</h3>
+                                <p class="text-gray-600 italic text-sm editable" data-placeholder="الشركة، المدينة | التاريخ">الشركة، المدينة | التاريخ</p>
+                                <p class="text-sm text-gray-700 mt-2 editable" data-placeholder="وصف المهام والمسؤوليات">
+                                    وصف المهام والمسؤوليات.
+                                </p>
                             </div>
                         </div>
-                        <div class="space-y-4">
-                            <h2 class="text-xl font-semibold border-b-2 border-gray-500 pb-2 mb-4">معلومات الاتصال</h2>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold border-b-2 border-gray-300 pb-2 mb-4">التعليم</h2>
+                        <div id="user-education" class="space-y-6">
+                            <div class="relative">
+                                <h3 class="text-lg font-semibold editable" data-placeholder="الدرجة العلمية">الدرجة العلمية</h3>
+                                <p class="text-gray-600 italic text-sm editable" data-placeholder="الجامعة، المدينة | التاريخ">الجامعة، المدينة | التاريخ</p>
+                                <p class="text-sm text-gray-700 mt-2 editable" data-placeholder="الشهادات والإنجازات">
+                                    الشهادات والإنجازات.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="custom-sections-container" class="space-y-6"></div>
+                </div>
+            </div>
+        `,
+        template2: `
+            <div class="flex flex-col items-center text-center p-8 space-y-6">
+                <img id="profile-image" src="https://placehold.co/150x150/000000/FFFFFF?text=صورتك" alt="صورة شخصية" class="w-40 h-40 rounded-full border-4 border-gray-300 object-cover editable">
+                <h1 id="user-name" class="text-4xl font-bold editable" data-placeholder="اسمك الكامل">اسمك الكامل</h1>
+                <p id="user-title" class="text-xl text-gray-600 editable" data-placeholder="مسمى وظيفي">مسمى وظيفي</p>
+                <div class="border-b-2 w-20 border-gray-400 my-4"></div>
+                <p id="user-profile" class="text-gray-700 leading-relaxed max-w-2xl editable" data-placeholder="نبذة شخصية">
+                    نبذة شخصية مفصلة عن خبراتك ومهاراتك.
+                </p>
+                <div class="w-full max-w-2xl text-right space-y-6">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800 border-b-2 border-gray-300 pb-2 mb-4">معلومات الاتصال</h2>
+                        <div class="text-gray-700 space-y-1">
                             <p id="user-phone" class="text-sm editable" data-placeholder="رقم الهاتف">رقم الهاتف: 123-456-7890</p>
                             <p id="user-email" class="text-sm editable" data-placeholder="البريد الإلكتروني">البريد الإلكتروني: you@example.com</p>
                             <p id="user-location" class="text-sm editable" data-placeholder="الموقع">الموقع: مدينتك، دولتك</p>
                             <p id="user-dob" class="text-sm editable" data-placeholder="تاريخ الميلاد">تاريخ الميلاد: 01-01-1990</p>
                         </div>
-                        <div class="space-y-4">
-                            <h2 class="text-xl font-semibold border-b-2 border-gray-500 pb-2 mb-4">المهارات</h2>
-                            <ul id="user-skills" class="list-disc list-inside space-y-2 text-sm editable" data-placeholder="مهارة 1، مهارة 2...">
-                                <li>مهارة 1</li>
-                                <li>مهارة 2</li>
-                                <li>مهارة 3</li>
-                            </ul>
-                        </div>
-                        <div class="space-y-4">
-                            <h2 class="text-xl font-semibold border-b-2 border-gray-500 pb-2 mb-4">اللغات</h2>
-                            <ul id="user-languages" class="list-disc list-inside space-y-2 text-sm editable" data-placeholder="لغة 1، لغة 2...">
-                                <li>لغة 1</li>
-                                <li>لغة 2</li>
-                            </ul>
-                        </div>
-                        <div class="space-y-4">
-                            <h2 class="text-xl font-semibold border-b-2 border-gray-500 pb-2 mb-4">الاهتمامات</h2>
-                            <ul id="user-interests" class="list-disc list-inside space-y-2 text-sm editable" data-placeholder="اهتمام 1، اهتمام 2...">
-                                <li>اهتمام 1</li>
-                                <li>اهتمام 2</li>
-                            </ul>
-                        </div>
                     </div>
-                    <div class="w-full md:w-2/3 p-8 space-y-8">
-                        <div>
-                            <h2 class="text-2xl font-bold border-b-2 border-gray-300 pb-2 mb-4">الملف الشخصي</h2>
-                            <p id="user-profile" class="text-gray-700 leading-relaxed text-sm editable" data-placeholder="اكتب هنا نبذة عنك">
-                                نبذة مختصرة عن خبراتك وأهدافك المهنية.
-                            </p>
-                        </div>
-                        <div>
-                            <h2 class="text-2xl font-bold border-b-2 border-gray-300 pb-2 mb-4">الخبرة المهنية</h2>
-                            <div id="user-experience" class="space-y-6">
-                                <div class="relative">
-                                    <h3 class="text-lg font-semibold editable" data-placeholder="مسمى وظيفي">مسمى وظيفي</h3>
-                                    <p class="text-gray-600 italic text-sm editable" data-placeholder="الشركة، المدينة | التاريخ">الشركة، المدينة | التاريخ</p>
-                                    <p class="text-sm text-gray-700 mt-2 editable" data-placeholder="وصف المهام والمسؤوليات">
-                                        وصف المهام والمسؤوليات.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        <div>
-                            <h2 class="text-2xl font-bold border-b-2 border-gray-300 pb-2 mb-4">التعليم</h2>
-                            <div id="user-education" class="space-y-6">
-                                <div class="relative">
-                                    <h3 class="text-lg font-semibold editable" data-placeholder="الدرجة العلمية">الدرجة العلمية</h3>
-                                    <p class="text-gray-600 italic text-sm editable" data-placeholder="الجامعة، المدينة | التاريخ">الجامعة، المدينة | التاريخ</p>
-                                    <p class="text-sm text-gray-700 mt-2 editable" data-placeholder="الشهادات والإنجازات">
-                                        الشهادات والإنجازات.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `,
-            template2: `
-                <div class="flex flex-col items-center text-center p-8 space-y-6">
-                    <img id="profile-image" src="https://placehold.co/150x150/000000/FFFFFF?text=صورتك" alt="صورة شخصية" class="w-40 h-40 rounded-full border-4 border-gray-300 object-cover editable">
-                    <h1 id="user-name" class="text-4xl font-bold editable" data-placeholder="اسمك الكامل">اسمك الكامل</h1>
-                    <p id="user-title" class="text-xl text-gray-600 editable" data-placeholder="مسمى وظيفي">مسمى وظيفي</p>
-                    <div class="border-b-2 w-20 border-gray-400 my-4"></div>
-                    <p id="user-profile" class="text-gray-700 leading-relaxed max-w-2xl editable" data-placeholder="نبذة شخصية">
-                        نبذة شخصية مفصلة عن خبراتك ومهاراتك.
-                    </p>
-                    <div class="w-full max-w-2xl text-right">
+                    <div>
                         <h2 class="text-2xl font-bold text-gray-800 border-b-2 border-gray-300 pb-2 mb-4">الخبرة المهنية</h2>
                         <div id="user-experience" class="space-y-4">
                             <div class="editable" data-placeholder="مسمى وظيفي، الشركة، التاريخ">
@@ -204,464 +243,666 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            `,
-            template3: `
-                <div class="bg-gray-200 p-8">
-                    <div class="flex flex-col md:flex-row bg-white rounded-lg shadow-lg p-6 space-x-6 space-x-reverse">
-                        <div class="w-full md:w-1/3 space-y-6">
-                            <div class="text-center">
-                                <img id="profile-image" src="https://placehold.co/120x120/E2E8F0/4A5568?text=صورتك" alt="صورة شخصية" class="w-32 h-32 rounded-full mx-auto object-cover editable">
-                                <h1 id="user-name" class="text-2xl font-bold mt-2 editable" data-placeholder="اسمك">اسمك الكامل</h1>
-                                <p id="user-title" class="text-gray-600 editable" data-placeholder="مسمى وظيفي">مسمى وظيفي</p>
-                            </div>
-                            <div class="bg-gray-100 p-4 rounded-lg">
-                                <h2 class="font-bold text-lg mb-2">معلومات الاتصال</h2>
-                                <p id="user-phone" class="text-sm editable" data-placeholder="رقم الهاتف">رقم الهاتف: +123456789</p>
-                                <p id="user-email" class="text-sm editable" data-placeholder="البريد">البريد: you@example.com</p>
-                            </div>
-                        </div>
-                        <div class="w-full md:w-2/3 space-y-6">
-                            <div>
-                                <h2 class="font-bold text-xl border-b pb-2 mb-2">الملف الشخصي</h2>
-                                <p id="user-profile" class="text-sm text-gray-700 editable" data-placeholder="اكتب نبذة">
-                                    نبذة عنك.
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800 border-b-2 border-gray-300 pb-2 mb-4">التعليم</h2>
+                        <div id="user-education" class="space-y-4">
+                             <div class="editable" data-placeholder="الدرجة العلمية، الجامعة، التاريخ">
+                                <h3 class="text-lg font-semibold">الدرجة العلمية</h3>
+                                <p class="text-gray-600 italic">الجامعة، المدينة | التاريخ</p>
+                                <p class="text-sm text-gray-700 mt-1">
+                                    الشهادات والإنجازات.
                                 </p>
                             </div>
-                            <div>
-                                <h2 class="font-bold text-xl border-b pb-2 mb-2">الخبرة</h2>
-                                <div id="user-experience" class="space-y-4">
-                                    <div class="editable" data-placeholder="المسمى الوظيفي">
-                                        <h3 class="font-semibold">المسمى الوظيفي</h3>
-                                        <p class="text-sm text-gray-600 italic">الشركة | التاريخ</p>
-                                    </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800 border-b-2 border-gray-300 pb-2 mb-4">المهارات</h2>
+                        <ul id="user-skills" class="list-disc list-inside space-y-2 text-sm editable" data-placeholder="مهارة 1، مهارة 2...">
+                            <li>مهارة 1</li>
+                            <li>مهارة 2</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800 border-b-2 border-gray-300 pb-2 mb-4">اللغات</h2>
+                        <ul id="user-languages" class="list-disc list-inside space-y-2 text-sm editable" data-placeholder="لغة 1، لغة 2...">
+                            <li>لغة 1</li>
+                            <li>لغة 2</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800 border-b-2 border-gray-300 pb-2 mb-4">الاهتمامات</h2>
+                        <ul id="user-interests" class="list-disc list-inside space-y-2 text-sm editable" data-placeholder="اهتمام 1، اهتمام 2...">
+                            <li>اهتمام 1</li>
+                            <li>اهتمام 2</li>
+                        </ul>
+                    </div>
+                    <div id="custom-sections-container" class="space-y-6"></div>
+                </div>
+            </div>
+        `,
+        template3: `
+            <div class="bg-gray-200 p-8">
+                <div class="flex flex-col md:flex-row bg-white rounded-lg shadow-lg p-6 space-x-6 space-x-reverse">
+                    <div class="w-full md:w-1/3 space-y-6">
+                        <div class="text-center">
+                            <img id="profile-image" src="https://placehold.co/120x120/E2E8F0/4A5568?text=صورتك" alt="صورة شخصية" class="w-32 h-32 rounded-full mx-auto object-cover editable">
+                            <h1 id="user-name" class="text-2xl font-bold mt-2 editable" data-placeholder="اسمك">اسمك الكامل</h1>
+                            <p id="user-title" class="text-gray-600 editable" data-placeholder="مسمى وظيفي">مسمى وظيفي</p>
+                        </div>
+                        <div class="bg-gray-100 p-4 rounded-lg">
+                            <h2 class="font-bold text-lg mb-2">معلومات الاتصال</h2>
+                            <p id="user-phone" class="text-sm editable" data-placeholder="رقم الهاتف">رقم الهاتف: +123456789</p>
+                            <p id="user-email" class="text-sm editable" data-placeholder="البريد">البريد: you@example.com</p>
+                            <p id="user-location" class="text-sm editable" data-placeholder="الموقع">الموقع: مدينتك، دولتك</p>
+                            <p id="user-dob" class="text-sm editable" data-placeholder="تاريخ الميلاد">تاريخ الميلاد: 01-01-1990</p>
+                        </div>
+                        <div class="bg-gray-100 p-4 rounded-lg">
+                            <h2 class="font-bold text-lg mb-2">المهارات</h2>
+                            <ul id="user-skills" class="list-disc list-inside space-y-1 text-sm editable" data-placeholder="مهاراتك">
+                                <li>مهارة 1</li>
+                            </ul>
+                        </div>
+                        <div class="bg-gray-100 p-4 rounded-lg">
+                            <h2 class="font-bold text-lg mb-2">اللغات</h2>
+                            <ul id="user-languages" class="list-disc list-inside space-y-1 text-sm editable" data-placeholder="لغاتك">
+                                <li>لغة 1</li>
+                            </ul>
+                        </div>
+                        <div class="bg-gray-100 p-4 rounded-lg">
+                            <h2 class="font-bold text-lg mb-2">الاهتمامات</h2>
+                            <ul id="user-interests" class="list-disc list-inside space-y-1 text-sm editable" data-placeholder="اهتماماتك">
+                                <li>اهتمام 1</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="w-full md:w-2/3 space-y-6">
+                        <div>
+                            <h2 class="font-bold text-xl border-b pb-2 mb-2">الملف الشخصي</h2>
+                            <p id="user-profile" class="text-sm text-gray-700 editable" data-placeholder="اكتب نبذة">
+                                نبذة عنك.
+                            </p>
+                        </div>
+                        <div>
+                            <h2 class="font-bold text-xl border-b pb-2 mb-2">الخبرة</h2>
+                            <div id="user-experience" class="space-y-4">
+                                <div class="editable" data-placeholder="المسمى الوظيفي">
+                                    <h3 class="font-semibold">المسمى الوظيفي</h3>
+                                    <p class="text-sm text-gray-600 italic">الشركة | التاريخ</p>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            `,
-            template4: `
-                <div class="flex flex-col p-8 space-y-8 font-serif">
-                    <div class="text-center">
-                        <h1 id="user-name" class="text-4xl font-bold editable" data-placeholder="اسمك الكامل">اسمك الكامل</h1>
-                        <p id="user-title" class="text-md text-gray-600 editable" data-placeholder="مسمى وظيفي">مسمى وظيفي</p>
-                        <div class="mt-2 text-sm text-gray-500 editable" data-placeholder="معلومات الاتصال">
-                            الهاتف: 123-456-7890 | البريد الإلكتروني: you@example.com | الموقع: مدينتك
-                        </div>
-                    </div>
-                    <div class="border-b-2 border-gray-300"></div>
-                    <div>
-                        <h2 class="text-xl font-bold mb-2">الملف الشخصي</h2>
-                        <p id="user-profile" class="text-gray-700 editable" data-placeholder="نبذة شخصية">
-                            نبذة عنك ومهاراتك.
-                        </p>
-                    </div>
-                    <div>
-                        <h2 class="text-xl font-bold mb-2">الخبرة المهنية</h2>
-                        <div id="user-experience" class="space-y-4">
-                            <div class="editable" data-placeholder="المسمى الوظيفي، الشركة، التاريخ">
-                                <h3 class="font-semibold text-lg">المسمى الوظيفي</h3>
-                                <p class="text-sm text-gray-600 italic">الشركة، المدينة | التاريخ</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `,
-            template5: `
-                <div class="bg-gray-900 text-white p-8">
-                    <div class="bg-gradient-to-r from-blue-500 to-indigo-600 p-6 rounded-lg shadow-lg text-center">
-                        <img id="profile-image" src="https://placehold.co/100x100/3B82F6/ffffff?text=صورة" alt="صورة شخصية" class="w-24 h-24 rounded-full border-4 border-white mx-auto object-cover editable">
-                        <h1 id="user-name" class="text-3xl font-bold mt-2 editable" data-placeholder="اسمك الكامل">اسمك الكامل</h1>
-                        <p id="user-title" class="text-lg editable" data-placeholder="مسمى وظيفي">مسمى وظيفي</p>
-                    </div>
-                    <div class="grid md:grid-cols-3 gap-6 mt-8">
-                        <div class="col-span-1 space-y-6">
-                            <div class="bg-white text-gray-800 p-4 rounded-lg shadow-md">
-                                <h2 class="font-bold text-xl border-b-2 border-indigo-300 pb-2 mb-2">الاتصال</h2>
-                                <p id="user-phone" class="text-sm editable" data-placeholder="الهاتف">الهاتف: 123-456-7890</p>
-                                <p id="user-email" class="text-sm editable" data-placeholder="البريد">البريد: you@example.com</p>
-                            </div>
-                            <div class="bg-white text-gray-800 p-4 rounded-lg shadow-md">
-                                <h2 class="font-bold text-xl border-b-2 border-indigo-300 pb-2 mb-2">المهارات</h2>
-                                <ul id="user-skills" class="list-none space-y-2 text-sm editable" data-placeholder="مهاراتك">
-                                    <li>مهارة 1</li>
-                                    <li>مهارة 2</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="col-span-2 space-y-6">
-                            <div class="bg-white text-gray-800 p-4 rounded-lg shadow-md">
-                                <h2 class="font-bold text-xl border-b-2 border-indigo-300 pb-2 mb-2">الخبرة</h2>
-                                <div id="user-experience" class="space-y-4">
-                                    <div class="editable" data-placeholder="المسمى الوظيفي">
-                                        <h3 class="font-semibold">المسمى الوظيفي</h3>
-                                        <p class="text-sm text-gray-600 italic">الشركة | التاريخ</p>
-                                    </div>
+                        <div>
+                            <h2 class="font-bold text-xl border-b pb-2 mb-2">التعليم</h2>
+                            <div id="user-education" class="space-y-4">
+                                <div class="editable" data-placeholder="الدرجة العلمية">
+                                    <h3 class="font-semibold">الدرجة العلمية</h3>
+                                    <p class="text-sm text-gray-600 italic">الجامعة | التاريخ</p>
                                 </div>
                             </div>
                         </div>
+                        <div id="custom-sections-container" class="space-y-6"></div>
                     </div>
                 </div>
-            `
-        };
+            </div>
+        `,
+        template4: `
+            <div class="flex flex-col p-8 space-y-8 font-serif">
+                <div class="text-center">
+                    <h1 id="user-name" class="text-4xl font-bold editable" data-placeholder="اسمك الكامل">اسمك الكامل</h1>
+                    <p id="user-title" class="text-md text-gray-600 editable" data-placeholder="مسمى وظيفي">مسمى وظيفي</p>
+                    <div class="mt-2 text-sm text-gray-500 editable" data-placeholder="معلومات الاتصال">
+                        <p id="user-phone" class="text-sm editable" data-placeholder="رقم الهاتف">الهاتف: 123-456-7890</p>
+                        <p id="user-email" class="text-sm editable" data-placeholder="البريد">البريد الإلكتروني: you@example.com</p>
+                        <p id="user-location" class="text-sm editable" data-placeholder="الموقع">الموقع: مدينتك</p>
+                        <p id="user-dob" class="text-sm editable" data-placeholder="تاريخ الميلاد">تاريخ الميلاد: 01-01-1990</p>
+                    </div>
+                </div>
+                <div class="border-b-2 border-gray-300"></div>
+                <div>
+                    <h2 class="text-xl font-bold mb-2">الملف الشخصي</h2>
+                    <p id="user-profile" class="text-gray-700 editable" data-placeholder="نبذة شخصية">
+                        نبذة عنك ومهاراتك.
+                    </p>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold mb-2">الخبرة المهنية</h2>
+                    <div id="user-experience" class="space-y-4">
+                        <div class="editable" data-placeholder="المسمى الوظيفي، الشركة، التاريخ">
+                            <h3 class="font-semibold text-lg">المسمى الوظيفي</h3>
+                            <p class="text-sm text-gray-600 italic">الشركة، المدينة | التاريخ</p>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold mb-2">التعليم</h2>
+                    <div id="user-education" class="space-y-4">
+                        <div class="editable" data-placeholder="الدرجة العلمية، الجامعة، التاريخ">
+                            <h3 class="font-semibold text-lg">الدرجة العلمية</h3>
+                            <p class="text-sm text-gray-600 italic">الجامعة، المدينة | التاريخ</p>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold mb-2">المهارات</h2>
+                    <ul id="user-skills" class="list-disc list-inside space-y-2 text-sm editable" data-placeholder="مهاراتك">
+                        <li>مهارة 1</li>
+                        <li>مهارة 2</li>
+                    </ul>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold mb-2">اللغات</h2>
+                    <ul id="user-languages" class="list-disc list-inside space-y-2 text-sm editable" data-placeholder="لغاتك">
+                        <li>لغة 1</li>
+                        <li>لغة 2</li>
+                    </ul>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold mb-2">الاهتمامات</h2>
+                    <ul id="user-interests" class="list-disc list-inside space-y-2 text-sm editable" data-placeholder="اهتماماتك">
+                        <li>اهتمام 1</li>
+                        <li>اهتمام 2</li>
+                    </ul>
+                </div>
+                <div id="custom-sections-container" class="space-y-6"></div>
+            </div>
+        `,
+        template5: `
+            <div class="bg-gray-900 text-white p-8">
+                <div class="bg-gradient-to-r from-blue-500 to-indigo-600 p-6 rounded-lg shadow-lg text-center">
+                    <img id="profile-image" src="https://placehold.co/100x100/3B82F6/ffffff?text=صورة" alt="صورة شخصية" class="w-24 h-24 rounded-full border-4 border-white mx-auto object-cover editable">
+                    <h1 id="user-name" class="text-3xl font-bold mt-2 editable" data-placeholder="اسمك الكامل">اسمك الكامل</h1>
+                    <p id="user-title" class="text-lg editable" data-placeholder="مسمى وظيفي">مسمى وظيفي</p>
+                </div>
+                <div class="grid md:grid-cols-3 gap-6 mt-8">
+                    <div class="col-span-1 space-y-6">
+                        <div class="bg-white text-gray-800 p-4 rounded-lg shadow-md">
+                            <h2 class="font-bold text-xl border-b-2 border-indigo-300 pb-2 mb-2">الاتصال</h2>
+                            <p id="user-phone" class="text-sm editable" data-placeholder="الهاتف">الهاتف: 123-456-7890</p>
+                            <p id="user-email" class="text-sm editable" data-placeholder="البريد">البريد: you@example.com</p>
+                            <p id="user-location" class="text-sm editable" data-placeholder="الموقع">الموقع: مدينتك، دولتك</p>
+                            <p id="user-dob" class="text-sm editable" data-placeholder="تاريخ الميلاد">تاريخ الميلاد: 01-01-1990</p>
+                        </div>
+                        <div class="bg-white text-gray-800 p-4 rounded-lg shadow-md">
+                            <h2 class="font-bold text-xl border-b-2 border-indigo-300 pb-2 mb-2">المهارات</h2>
+                            <ul id="user-skills" class="list-none space-y-2 text-sm editable" data-placeholder="مهاراتك">
+                                <li>مهارة 1</li>
+                                <li>مهارة 2</li>
+                            </ul>
+                        </div>
+                        <div class="bg-white text-gray-800 p-4 rounded-lg shadow-md">
+                            <h2 class="font-bold text-xl border-b-2 border-indigo-300 pb-2 mb-2">اللغات</h2>
+                            <ul id="user-languages" class="list-none space-y-2 text-sm editable" data-placeholder="لغاتك">
+                                <li>لغة 1</li>
+                                <li>لغة 2</li>
+                            </ul>
+                        </div>
+                        <div class="bg-white text-gray-800 p-4 rounded-lg shadow-md">
+                            <h2 class="font-bold text-xl border-b-2 border-indigo-300 pb-2 mb-2">الاهتمامات</h2>
+                            <ul id="user-interests" class="list-none space-y-2 text-sm editable" data-placeholder="اهتماماتك">
+                                <li>اهتمام 1</li>
+                                <li>اهتمام 2</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-span-2 space-y-6">
+                         <div class="bg-white text-gray-800 p-4 rounded-lg shadow-md">
+                            <h2 class="font-bold text-xl border-b-2 border-indigo-300 pb-2 mb-2">الملف الشخصي</h2>
+                            <p id="user-profile" class="text-sm text-gray-700 editable" data-placeholder="اكتب نبذة">
+                                نبذة عنك.
+                            </p>
+                        </div>
+                        <div class="bg-white text-gray-800 p-4 rounded-lg shadow-md">
+                            <h2 class="font-bold text-xl border-b-2 border-indigo-300 pb-2 mb-2">الخبرة</h2>
+                            <div id="user-experience" class="space-y-4">
+                                <div class="editable" data-placeholder="المسمى الوظيفي">
+                                    <h3 class="font-semibold">المسمى الوظيفي</h3>
+                                    <p class="text-sm text-gray-600 italic">الشركة | التاريخ</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white text-gray-800 p-4 rounded-lg shadow-md">
+                            <h2 class="font-bold text-xl border-b-2 border-indigo-300 pb-2 mb-2">التعليم</h2>
+                            <div id="user-education" class="space-y-4">
+                                <div class="editable" data-placeholder="الدرجة العلمية">
+                                    <h3 class="font-semibold">الدرجة العلمية</h3>
+                                    <p class="text-sm text-gray-600 italic">الجامعة | التاريخ</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="custom-sections-container" class="space-y-6"></div>
+                    </div>
+                </div>
+            </div>
+        `
+    };
 
-        const cvDocument = document.getElementById('cv-document');
-        const savePdfButton = document.getElementById('save-pdf');
-        const templateButtons = document.querySelectorAll('.template-button');
-        const aiInput = document.getElementById('ai-input');
-        const generateButton = document.getElementById('generate-ai-content');
-        const applyToCvButton = document.getElementById('apply-to-cv');
-        const parsedOutputSection = document.getElementById('ai-parsed-output-section');
-        const parsedOutputDiv = document.getElementById('ai-parsed-output');
-        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        
-        let cvData = null;
-        let currentTemplate = 'template1';
+    const cvDocument = document.getElementById('cv-document');
+    const savePdfButton = document.getElementById('save-pdf');
+    const templateButtons = document.querySelectorAll('.template-button');
+    const aiInput = document.getElementById('ai-input');
+    const generateButton = document.getElementById('generate-ai-content');
+    const applyToCvButton = document.getElementById('apply-to-cv');
+    const parsedOutputSection = document.getElementById('ai-parsed-output-section');
+    const parsedOutputDiv = document.getElementById('ai-parsed-output');
+    const editParsedDataButton = document.getElementById('edit-parsed-data');
+    const addSectionButton = document.getElementById('add-section');
+    const addSectionModal = document.getElementById('add-section-modal');
+    const cancelAddSectionButton = document.getElementById('cancel-add-section');
+    const confirmAddSectionButton = document.getElementById('confirm-add-section');
+    const togglePanelButton = document.getElementById('toggle-panel');
+    const controlPanel = document.getElementById('control-panel');
 
-        // Function to render a template
-        function renderTemplate(templateName) {
-            cvDocument.innerHTML = templates[templateName];
-            currentTemplate = templateName;
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      
+    let cvData = null;
+    let currentTemplate = 'template1';
+
+    // Function to render a template
+    function renderTemplate(templateName) {
+        cvDocument.innerHTML = templates[templateName];
+        currentTemplate = templateName;
+        addEventListeners();
+        // Re-apply data if available
+        if (cvData) {
+            applyDataToTemplate();
+        }
+    }
+
+    renderTemplate(currentTemplate);
+
+    // Function to attach all event listeners for editing and image upload
+    function addEventListeners() {
+        document.querySelectorAll('.editable').forEach(el => {
+            el.addEventListener('click', (event) => {
+                event.stopPropagation();
+                el.setAttribute('contenteditable', 'true');
+                el.classList.add('p-1', 'rounded', 'border', 'border-blue-400', 'focus:outline-none');
+                el.focus();
+            });
+        });
+
+        if (isMobile) {
+            document.body.addEventListener('touchend', (event) => {
+                document.querySelectorAll('.editable[contenteditable="true"]').forEach(el => {
+                    if (!el.contains(event.target)) {
+                        el.removeAttribute('contenteditable');
+                        el.classList.remove('p-1', 'rounded', 'border', 'border-blue-400');
+                    }
+                });
+            });
+        } else {
+            document.body.addEventListener('click', (event) => {
+                document.querySelectorAll('.editable[contenteditable="true"]').forEach(el => {
+                    if (!el.contains(event.target)) {
+                        el.removeAttribute('contenteditable');
+                        el.classList.remove('p-1', 'rounded', 'border', 'border-blue-400');
+                    }
+                });
+            });
+        }
+
+        const profileImage = document.getElementById('profile-image');
+        if (profileImage) {
+            profileImage.addEventListener('click', () => {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'image/*';
+                input.onchange = (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                            profileImage.src = event.target.result;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                };
+                input.click();
+            });
+        }
+    }
+      
+    // Save as PDF function
+    savePdfButton.addEventListener('click', async () => {
+        const cvElement = document.getElementById('cv-document');
+          
+        document.querySelectorAll('.editable[contenteditable="true"]').forEach(el => {
+            el.removeAttribute('contenteditable');
+            el.classList.remove('p-1', 'rounded', 'border', 'border-blue-400');
+        });
+
+        const originalText = savePdfButton.innerHTML;
+        savePdfButton.innerHTML = 'جاري التحميل...';
+          
+        try {
+            const canvas = await html2canvas(cvElement, {
+                scale: 2,
+                allowTaint: true,
+                useCORS: true
+            });
+              
+            const imgData = canvas.toDataURL('image/png');
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const imgProps = pdf.getImageProperties(imgData);
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+            pdf.save('السيرة-الذاتية.pdf');
+        } catch (error) {
+            console.error("Failed to generate PDF:", error);
+            alert("فشل في توليد ملف الـ PDF. يرجى المحاولة مرة أخرى.");
+        } finally {
+            savePdfButton.innerHTML = originalText;
             addEventListeners();
         }
+    });
 
-        renderTemplate(currentTemplate);
+    // Template selection
+    templateButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const templateName = button.dataset.template;
+            renderTemplate(templateName);
+        });
+    });
 
-        // Function to attach all event listeners for editing and image upload
-        function addEventListeners() {
-            document.querySelectorAll('.editable').forEach(el => {
-                el.addEventListener('click', (event) => {
-                    event.stopPropagation();
-                    el.setAttribute('contenteditable', 'true');
-                    el.classList.add('p-1', 'rounded', 'border', 'border-blue-400', 'focus:outline-none');
-                    el.focus();
-                });
-            });
+    // AI generation function
+    generateButton.addEventListener('click', async () => {
+        const userInput = aiInput.value;
+        const loadingSpinner = document.getElementById('loading-spinner');
+        const buttonTextSpan = document.getElementById('generate-text-span');
 
-            if (isMobile) {
-                document.body.addEventListener('touchend', (event) => {
-                    document.querySelectorAll('.editable[contenteditable="true"]').forEach(el => {
-                        if (!el.contains(event.target)) {
-                            el.removeAttribute('contenteditable');
-                            el.classList.remove('p-1', 'rounded', 'border', 'border-blue-400');
-                        }
-                    });
-                });
-            } else {
-                document.body.addEventListener('click', (event) => {
-                    document.querySelectorAll('.editable[contenteditable="true"]').forEach(el => {
-                        if (!el.contains(event.target)) {
-                            el.removeAttribute('contenteditable');
-                            el.classList.remove('p-1', 'rounded', 'border', 'border-blue-400');
-                        }
-                    });
-                });
-            }
-
-            const profileImage = document.getElementById('profile-image');
-            if (profileImage) {
-                profileImage.addEventListener('click', () => {
-                    const input = document.createElement('input');
-                    input.type = 'file';
-                    input.accept = 'image/*';
-                    input.onchange = (e) => {
-                        const file = e.target.files[0];
-                        if (file) {
-                            const reader = new FileReader();
-                            reader.onload = (event) => {
-                                profileImage.src = event.target.result;
-                            };
-                            reader.readAsDataURL(file);
-                        }
-                    };
-                    input.click();
-                });
-            }
+        if (!userInput.trim()) {
+            alert('الرجاء إدخال معلوماتك لتوليد السيرة الذاتية.');
+            return;
         }
-        
-        // Save as PDF function
-        savePdfButton.addEventListener('click', async () => {
-            const cvElement = document.getElementById('cv-document');
-            
-            // Remove contenteditable attributes before capturing
-            document.querySelectorAll('.editable[contenteditable="true"]').forEach(el => {
-                el.removeAttribute('contenteditable');
-                el.classList.remove('p-1', 'rounded', 'border', 'border-blue-400');
-            });
 
-            const originalText = savePdfButton.innerHTML;
-            savePdfButton.innerHTML = 'جاري التحميل...';
-            
-            try {
-                const canvas = await html2canvas(cvElement, {
-                    scale: 2,
-                    allowTaint: true,
-                    useCORS: true
-                });
-                
-                const imgData = canvas.toDataURL('image/png');
-                const { jsPDF } = window.jspdf;
-                const pdf = new jsPDF('p', 'mm', 'a4');
-                const imgProps = pdf.getImageProperties(imgData);
-                const pdfWidth = pdf.internal.pageSize.getWidth();
-                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+        buttonTextSpan.classList.add('hidden');
+        loadingSpinner.classList.remove('hidden');
 
-                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-                pdf.save('السيرة-الذاتية.pdf');
-            } catch (error) {
-                console.error("Failed to generate PDF:", error);
-                alert("فشل في توليد ملف الـ PDF. يرجى المحاولة مرة أخرى.");
-            } finally {
-                savePdfButton.innerHTML = originalText;
-                addEventListeners();
-            }
-        });
+        const prompt = `
+        بناءً على المعلومات التالية، قم بإنشاء بيانات منظمة للسيرة الذاتية بتنسيق JSON.
+        - الاسم الكامل (name)
+        - المسمى الوظيفي (title)
+        - نبذة عن الملف الشخصي (profile)
+        - قائمة بالمهارات (skills - array of strings)
+        - قائمة بالخبرات المهنية (experience - array of objects {title, company, date, description})
+        - قائمة بالتعليم (education - array of objects {degree, university, date, description})
+        - رقم الهاتف (phone)
+        - البريد الإلكتروني (email)
+        - الموقع (location)
+        - اللغات (languages - array of strings)
+        - الاهتمامات (interests - array of strings)
+        - تاريخ الميلاد (dateOfBirth - string)
 
-        // Template selection
-        templateButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const templateName = button.dataset.template;
-                renderTemplate(templateName);
-            });
-        });
+        المعلومات: "${userInput}"
 
-        // AI generation function
-        generateButton.addEventListener('click', async () => {
-            const userInput = aiInput.value;
-            const loadingSpinner = document.getElementById('loading-spinner');
-            const buttonTextSpan = document.getElementById('generate-text-span');
-
-            if (!userInput.trim()) {
-                alert('الرجاء إدخال معلوماتك لتوليد السيرة الذاتية.');
-                return;
-            }
-
-            buttonTextSpan.classList.add('hidden');
-            loadingSpinner.classList.remove('hidden');
-
-            const prompt = `
-            بناءً على المعلومات التالية، قم بإنشاء بيانات منظمة للسيرة الذاتية بتنسيق JSON.
-            - الاسم الكامل (name)
-            - المسمى الوظيفي (title)
-            - نبذة عن الملف الشخصي (profile)
-            - قائمة بالمهارات (skills - array of strings)
-            - قائمة بالخبرات المهنية (experience - array of objects {title, company, date, description})
-            - قائمة بالتعليم (education - array of objects {degree, university, date, description})
-            - رقم الهاتف (phone)
-            - البريد الإلكتروني (email)
-            - الموقع (location)
-            - اللغات (languages - array of strings)
-            - الاهتمامات (interests - array of strings)
-            - تاريخ الميلاد (dateOfBirth - string)
-
-            المعلومات: "${userInput}"
-
-            التزم فقط بتنسيق JSON ولا تكتب أي نص آخر. تأكد من أن كل عنصر في القائمة يتوافق مع التنسيق المطلوب. إذا لم تجد معلومات معينة، اجعل القيمة فارغة.
-            `;
-            
-            const payload = {
-                contents: [{ parts: [{ text: prompt }] }],
-                generationConfig: {
-                    responseMimeType: "application/json",
-                    responseSchema: {
-                        type: "OBJECT",
-                        properties: {
-                            "name": { "type": "STRING" },
-                            "title": { "type": "STRING" },
-                            "profile": { "type": "STRING" },
-                            "phone": { "type": "STRING" },
-                            "email": { "type": "STRING" },
-                            "location": { "type": "STRING" },
-                            "dateOfBirth": { "type": "STRING" },
-                            "skills": {
-                                "type": "ARRAY",
-                                "items": { "type": "STRING" }
-                            },
-                            "experience": {
-                                "type": "ARRAY",
-                                "items": {
-                                    "type": "OBJECT",
-                                    "properties": {
-                                        "title": { "type": "STRING" },
-                                        "company": { "type": "STRING" },
-                                        "date": { "type": "STRING" },
-                                        "description": { "type": "STRING" }
-                                    }
+        التزم فقط بتنسيق JSON ولا تكتب أي نص آخر. تأكد من أن كل عنصر في القائمة يتوافق مع التنسيق المطلوب. إذا لم تجد معلومات معينة، اجعل القيمة فارغة.
+        `;
+          
+        const payload = {
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: {
+                responseMimeType: "application/json",
+                responseSchema: {
+                    type: "OBJECT",
+                    properties: {
+                        "name": { "type": "STRING" },
+                        "title": { "type": "STRING" },
+                        "profile": { "type": "STRING" },
+                        "phone": { "type": "STRING" },
+                        "email": { "type": "STRING" },
+                        "location": { "type": "STRING" },
+                        "dateOfBirth": { "type": "STRING" },
+                        "skills": {
+                            "type": "ARRAY",
+                            "items": { "type": "STRING" }
+                        },
+                        "experience": {
+                            "type": "ARRAY",
+                            "items": {
+                                "type": "OBJECT",
+                                "properties": {
+                                    "title": { "type": "STRING" },
+                                    "company": { "type": "STRING" },
+                                    "date": { "type": "STRING" },
+                                    "description": { "type": "STRING" }
                                 }
-                            },
-                            "education": {
-                                "type": "ARRAY",
-                                "items": {
-                                    "type": "OBJECT",
-                                    "properties": {
-                                        "degree": { "type": "STRING" },
-                                        "university": { "type": "STRING" },
-                                        "date": { "type": "STRING" },
-                                        "description": { "type": "STRING" }
-                                    }
-                                }
-                            },
-                            "languages": {
-                                "type": "ARRAY",
-                                "items": { "type": "STRING" }
-                            },
-                            "interests": {
-                                "type": "ARRAY",
-                                "items": { "type": "STRING" }
                             }
+                        },
+                        "education": {
+                            "type": "ARRAY",
+                            "items": {
+                                "type": "OBJECT",
+                                "properties": {
+                                    "degree": { "type": "STRING" },
+                                    "university": { "type": "STRING" },
+                                    "date": { "type": "STRING" },
+                                    "description": { "type": "STRING" }
+                                }
+                            }
+                        },
+                        "languages": {
+                            "type": "ARRAY",
+                            "items": { "type": "STRING" }
+                        },
+                        "interests": {
+                            "type": "ARRAY",
+                            "items": { "type": "STRING" }
                         }
                     }
                 }
-            };
-            
-            try {
-                let response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const result = await response.json();
-                const jsonText = result.candidates[0].content.parts[0].text;
-                cvData = JSON.parse(jsonText);
-                
-                let htmlOutput = `
-                    <p class="font-bold">الاسم: <span class="font-normal">${cvData.name || 'غير متوفر'}</span></p>
-                    <p class="font-bold">المسمى الوظيفي: <span class="font-normal">${cvData.title || 'غير متوفر'}</span></p>
-                    <p class="font-bold">نبذة شخصية: <span class="font-normal">${cvData.profile || 'غير متوفر'}</span></p>
-                    <p class="font-bold">المهارات: <span class="font-normal">${cvData.skills.join(', ') || 'غير متوفر'}</span></p>
-                    <p class="font-bold">اللغات: <span class="font-normal">${cvData.languages.join(', ') || 'غير متوفر'}</span></p>
-                    <p class="font-bold">تاريخ الميلاد: <span class="font-normal">${cvData.dateOfBirth || 'غير متوفر'}</span></p>
-                    <p class="font-bold">الخبرة: <span class="font-normal">${cvData.experience.map(exp => `${exp.title} (${exp.company})`).join('، ') || 'غير متوفر'}</span></p>
-                    <p class="font-bold">التعليم: <span class="font-normal">${cvData.education.map(edu => `${edu.degree} (${edu.university})`).join('، ') || 'غير متوفر'}</span></p>
-                `;
-                parsedOutputDiv.innerHTML = htmlOutput;
-                parsedOutputSection.classList.remove('hidden');
-
-            } catch (error) {
-                console.error('AI generation failed:', error);
-                alert('حدث خطأ أثناء التوليد. يرجى التأكد من أن مفتاح الـ API صحيح وأن معلوماتك واضحة والمحاولة مرة أخرى.');
-            } finally {
-                buttonTextSpan.classList.remove('hidden');
-                loadingSpinner.classList.add('hidden');
             }
-        });
+        };
+          
+        try {
+            let response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
 
-        // Function to populate a single template with data
-        function populateTemplate(templateDiv, data) {
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = templateDiv.innerHTML;
-
-            const nameEl = tempDiv.querySelector('#user-name');
-            if (nameEl) nameEl.textContent = data.name || nameEl.dataset.placeholder;
-            
-            const titleEl = tempDiv.querySelector('#user-title');
-            if (titleEl) titleEl.textContent = data.title || titleEl.dataset.placeholder;
-
-            const profileEl = tempDiv.querySelector('#user-profile');
-            if (profileEl) profileEl.textContent = data.profile || profileEl.dataset.placeholder;
-
-            const phoneEl = tempDiv.querySelector('#user-phone');
-            if (phoneEl) phoneEl.textContent = data.phone || phoneEl.dataset.placeholder;
-
-            const emailEl = tempDiv.querySelector('#user-email');
-            if (emailEl) emailEl.textContent = data.email || emailEl.dataset.placeholder;
-
-            const locationEl = tempDiv.querySelector('#user-location');
-            if (locationEl) locationEl.textContent = data.location || locationEl.dataset.placeholder;
-
-            const dobEl = tempDiv.querySelector('#user-dob');
-            if (dobEl) dobEl.textContent = data.dateOfBirth || dobEl.dataset.placeholder;
-            
-            const skillsList = tempDiv.querySelector('#user-skills');
-            if (skillsList && data.skills) {
-                skillsList.innerHTML = '';
-                data.skills.forEach(skill => {
-                    const li = document.createElement('li');
-                    li.textContent = skill;
-                    skillsList.appendChild(li);
-                });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const languagesList = tempDiv.querySelector('#user-languages');
-            if (languagesList && data.languages) {
-                 languagesList.innerHTML = '';
-                 data.languages.forEach(lang => {
-                     const li = document.createElement('li');
-                     li.textContent = lang;
-                     languagesList.appendChild(li);
-                 });
-            }
+            const result = await response.json();
+            const jsonText = result.candidates[0].content.parts[0].text;
+            cvData = JSON.parse(jsonText);
+              
+            displayParsedData(cvData);
+            parsedOutputSection.classList.remove('hidden');
 
-            const interestsList = tempDiv.querySelector('#user-interests');
-            if (interestsList && data.interests) {
-                 interestsList.innerHTML = '';
-                 data.interests.forEach(interest => {
-                     const li = document.createElement('li');
-                     li.textContent = interest;
-                     interestsList.appendChild(li);
-                 });
-            }
-            
-            const experienceDiv = tempDiv.querySelector('#user-experience');
-            if (experienceDiv && data.experience) {
-                experienceDiv.innerHTML = '';
-                data.experience.forEach(exp => {
-                    const div = document.createElement('div');
-                    div.className = 'relative editable';
-                    div.innerHTML = `
-                        <h3 class="text-lg font-semibold editable" data-placeholder="مسمى وظيفي">${exp.title || ''}</h3>
-                        <p class="text-gray-600 italic text-sm editable" data-placeholder="الشركة، المدينة | التاريخ">${exp.company || ''} | ${exp.date || ''}</p>
-                        <p class="text-sm text-gray-700 mt-2 editable" data-placeholder="وصف المهام والمسؤوليات">${exp.description || ''}</p>
-                    `;
-                    experienceDiv.appendChild(div);
-                });
-            }
+        } catch (error) {
+            console.error('AI generation failed:', error);
+            alert('حدث خطأ أثناء التوليد. يرجى التأكد من أن مفتاح الـ API صحيح وأن معلوماتك واضحة والمحاولة مرة أخرى.');
+        } finally {
+            buttonTextSpan.classList.remove('hidden');
+            loadingSpinner.classList.add('hidden');
+        }
+    });
 
-            const educationDiv = tempDiv.querySelector('#user-education');
-            if (educationDiv && data.education) {
-                educationDiv.innerHTML = '';
-                data.education.forEach(edu => {
-                    const div = document.createElement('div');
-                    div.className = 'relative editable';
-                    div.innerHTML = `
-                        <h3 class="text-lg font-semibold editable" data-placeholder="الدرجة العلمية">${edu.degree || ''}</h3>
-                        <p class="text-gray-600 italic text-sm editable" data-placeholder="الجامعة، المدينة | التاريخ">${edu.university || ''} | ${edu.date || ''}</p>
-                        <p class="text-sm text-gray-700 mt-2 editable" data-placeholder="الشهادات والإنجازات">${edu.description || ''}</p>
-                    `;
-                    educationDiv.appendChild(div);
-                });
-            }
+    // Function to display parsed data in a readable format
+    function displayParsedData(data) {
+        let htmlOutput = `
+            <p class="font-bold">الاسم: <span class="font-normal">${data.name || 'غير متوفر'}</span></p>
+            <p class="font-bold">المسمى الوظيفي: <span class="font-normal">${data.title || 'غير متوفر'}</span></p>
+            <p class="font-bold">نبذة شخصية: <span class="font-normal">${data.profile || 'غير متوفر'}</span></p>
+            <p class="font-bold">المهارات: <span class="font-normal">${data.skills.join(', ') || 'غير متوفر'}</span></p>
+            <p class="font-bold">اللغات: <span class="font-normal">${data.languages.join(', ') || 'غير متوفر'}</span></p>
+            <p class="font-bold">تاريخ الميلاد: <span class="font-normal">${data.dateOfBirth || 'غير متوفر'}</span></p>
+            <p class="font-bold">الخبرة: <span class="font-normal">${data.experience.map(exp => `${exp.title} (${exp.company})`).join('، ') || 'غير متوفر'}</span></p>
+            <p class="font-bold">التعليم: <span class="font-normal">${data.education.map(edu => `${edu.degree} (${edu.university})`).join('، ') || 'غير متوفر'}</span></p>
+        `;
+        parsedOutputDiv.innerHTML = htmlOutput;
+    }
 
-            return tempDiv.innerHTML;
+    // Function to populate the current template with data
+    function applyDataToTemplate() {
+        if (!cvData) return;
+
+        const nameEl = document.getElementById('user-name');
+        if (nameEl) nameEl.textContent = cvData.name || nameEl.dataset.placeholder;
+          
+        const titleEl = document.getElementById('user-title');
+        if (titleEl) titleEl.textContent = cvData.title || titleEl.dataset.placeholder;
+
+        const profileEl = document.getElementById('user-profile');
+        if (profileEl) profileEl.textContent = cvData.profile || profileEl.dataset.placeholder;
+
+        const phoneEl = document.getElementById('user-phone');
+        if (phoneEl) phoneEl.textContent = cvData.phone || phoneEl.dataset.placeholder;
+
+        const emailEl = document.getElementById('user-email');
+        if (emailEl) emailEl.textContent = cvData.email || emailEl.dataset.placeholder;
+
+        const locationEl = document.getElementById('user-location');
+        if (locationEl) locationEl.textContent = cvData.location || locationEl.dataset.placeholder;
+
+        const dobEl = document.getElementById('user-dob');
+        if (dobEl) dobEl.textContent = cvData.dateOfBirth || dobEl.dataset.placeholder;
+          
+        const skillsList = document.getElementById('user-skills');
+        if (skillsList && cvData.skills) {
+            skillsList.innerHTML = '';
+            cvData.skills.forEach(skill => {
+                const li = document.createElement('li');
+                li.textContent = skill;
+                li.classList.add('editable');
+                skillsList.appendChild(li);
+            });
         }
 
-        // Apply generated data to the current CV template
-        applyToCvButton.addEventListener('click', () => {
-            if (!cvData) {
-                alert('الرجاء توليد البيانات أولاً.');
-                return;
+        const languagesList = document.getElementById('user-languages');
+        if (languagesList && cvData.languages) {
+             languagesList.innerHTML = '';
+             cvData.languages.forEach(lang => {
+                 const li = document.createElement('li');
+                 li.textContent = lang;
+                 li.classList.add('editable');
+                 languagesList.appendChild(li);
+             });
+        }
+
+        const interestsList = document.getElementById('user-interests');
+        if (interestsList && cvData.interests) {
+             interestsList.innerHTML = '';
+             cvData.interests.forEach(interest => {
+                 const li = document.createElement('li');
+                 li.textContent = interest;
+                 li.classList.add('editable');
+                 interestsList.appendChild(li);
+             });
+        }
+          
+        const experienceDiv = document.getElementById('user-experience');
+        if (experienceDiv && cvData.experience) {
+            experienceDiv.innerHTML = '';
+            cvData.experience.forEach(exp => {
+                const div = document.createElement('div');
+                div.className = 'relative editable';
+                div.innerHTML = `
+                    <h3 class="text-lg font-semibold editable" data-placeholder="مسمى وظيفي">${exp.title || ''}</h3>
+                    <p class="text-gray-600 italic text-sm editable" data-placeholder="الشركة، المدينة | التاريخ">${exp.company || ''} | ${exp.date || ''}</p>
+                    <p class="text-sm text-gray-700 mt-2 editable" data-placeholder="وصف المهام والمسؤوليات">${exp.description || ''}</p>
+                `;
+                experienceDiv.appendChild(div);
+            });
+        }
+
+        const educationDiv = document.getElementById('user-education');
+        if (educationDiv && cvData.education) {
+            educationDiv.innerHTML = '';
+            cvData.education.forEach(edu => {
+                const div = document.createElement('div');
+                div.className = 'relative editable';
+                div.innerHTML = `
+                    <h3 class="text-lg font-semibold editable" data-placeholder="الدرجة العلمية">${edu.degree || ''}</h3>
+                    <p class="text-gray-600 italic text-sm editable" data-placeholder="الجامعة، المدينة | التاريخ">${edu.university || ''} | ${edu.date || ''}</p>
+                    <p class="text-sm text-gray-700 mt-2 editable" data-placeholder="الشهادات والإنجازات">${edu.description || ''}</p>
+                `;
+                educationDiv.appendChild(div);
+            });
+        }
+
+        addEventListeners();
+    }
+
+    // Apply generated data to the current CV template
+    applyToCvButton.addEventListener('click', () => {
+        if (!cvData) {
+            alert('الرجاء توليد البيانات أولاً.');
+            return;
+        }
+        applyDataToTemplate();
+    });
+
+    // Edit parsed data
+    editParsedDataButton.addEventListener('click', () => {
+        if (!cvData) return;
+        const jsonString = JSON.stringify(cvData, null, 2);
+        const newJsonString = prompt("يمكنك تعديل البيانات هنا:", jsonString);
+        if (newJsonString !== null) {
+            try {
+                cvData = JSON.parse(newJsonString);
+                displayParsedData(cvData);
+            } catch (e) {
+                alert("تنسيق JSON غير صحيح. يرجى المحاولة مرة أخرى.");
             }
+        }
+    });
 
-            // Create a temporary div to avoid modifying the original template string directly
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = templates[currentTemplate];
-            
-            // Populate the temporary div with the AI-generated data
-            const newTemplateHTML = populateTemplate(tempDiv, cvData);
-            
-            // Update the main CV document with the new content
-            cvDocument.innerHTML = newTemplateHTML;
-            
-            // Re-add event listeners for the newly generated editable elements
+    // Handle adding a new section
+    addSectionButton.addEventListener('click', () => {
+        addSectionModal.classList.remove('hidden');
+    });
+
+    cancelAddSectionButton.addEventListener('click', () => {
+        addSectionModal.classList.add('hidden');
+    });
+
+    confirmAddSectionButton.addEventListener('click', () => {
+        const title = document.getElementById('new-section-title').value;
+        const content = document.getElementById('new-section-content').value;
+        if (title.trim() === "" || content.trim() === "") {
+            alert("الرجاء إدخال عنوان ومحتوى للقسم.");
+            return;
+        }
+
+        const customSectionsContainer = document.getElementById('custom-sections-container');
+        if (customSectionsContainer) {
+            const newSection = document.createElement('div');
+            newSection.classList.add('space-y-4');
+            newSection.innerHTML = `
+                <div>
+                    <h2 class="text-2xl font-bold border-b-2 border-gray-300 pb-2 mb-4 editable">${title}</h2>
+                    <p class="text-gray-700 leading-relaxed text-sm editable">${content}</p>
+                </div>
+            `;
+            customSectionsContainer.appendChild(newSection);
             addEventListeners();
-        });
+            addSectionModal.classList.add('hidden');
+            document.getElementById('new-section-title').value = '';
+            document.getElementById('new-section-content').value = '';
+        } else {
+            alert("القالب الحالي لا يدعم إضافة أقسام جديدة.");
+        }
+    });
 
-    </script>
+    // Toggle control panel visibility on mobile
+    if (isMobile) {
+        controlPanel.style.transform = 'translateX(120%)';
+        togglePanelButton.addEventListener('click', () => {
+            if (controlPanel.style.transform === 'translateX(120%)') {
+                controlPanel.style.transform = 'translateX(0)';
+            } else {
+                controlPanel.style.transform = 'translateX(120%)';
+            }
+        });
+    }
+
+</script>
+
 </body>
 </html>
